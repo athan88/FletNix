@@ -10,7 +10,7 @@ SELECT
 		CAST(id AS int)		AS person_id,
 		LEFT(Lname,50)		AS lastname,
 		LEFT(Fname,50)		AS firstname,
-		NULL				AS gender
+		NULL			AS gender
 
 FROM MYIMDB.dbo.Imported_directors
 
@@ -54,24 +54,22 @@ from Movie
 use master
 INSERT into Fletnix.dbo.Movie
 SELECT  
-		LEFT(Name,254)		AS title,
-		cast(year AS int)	AS publication_year,
-		cast(Id AS int)		AS movie_id,
-		5.0					AS price,
+		cast(Id AS int)			AS movie_id,
+		LEFT(Name,254)			AS title,
 		NULL				AS duration,
-		NULL				AS descripton, 
+		NULL				AS descripton,
+		cast(year AS int)		AS publication_year, 
 		NULL				AS cover_image, 
 		NULL				AS previous_part, 
-		NULL				AS [URL]
+		5.0				AS price,
+		Id				AS [URL]
 
 FROM MYIMDB.dbo.Imported_Movie
-
---Customer
 
 --Genre
 insert  Fletnix.dbo.Genre
 
 select  distinct left(Genre,255)		as genre_name,
-        null							as [description]
+        null					as [description]
 
 from    MYIMDB.dbo.Imported_Genre
