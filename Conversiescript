@@ -1,0 +1,77 @@
+
+use master
+use FletNix
+select * from Person
+--SET IDENTITY_INSERT FLETNIX.dbo.Person ON
+--person 1
+
+INSERT into Fletnix.dbo.Person
+SELECT 
+		CAST(id AS int)		AS person_id,
+		LEFT(Lname,50)		AS lastname,
+		LEFT(Fname,50)		AS firstname,
+		NULL				AS gender
+
+FROM MYIMDB.dbo.Imported_directors
+
+--SET IDENTITY_INSERT FLETNIX.dbo.Person OFF
+
+--person 2
+use MYIMDB
+select *
+From Imported_Cast 
+
+use MYIMDB
+select * 
+from Imported_Person
+
+use FletNix
+select *
+FROM Person
+order by person_id desc
+
+Insert into FletNix.dbo.Person
+
+select 
+		id + 88801			AS person_id,
+		FName				AS firstname, 
+		Lname				AS lastname,
+		gender				AS gender
+
+From MYIMDB.dbo.Imported_Person
+
+
+--Movie
+use MYIMDB
+select * 
+from Imported_Movie
+Order by Nyr asc
+
+use FletNix
+select * 
+from Movie
+
+use master
+INSERT into Fletnix.dbo.Movie
+SELECT  
+		LEFT(Name,254)		AS title,
+		cast(year AS int)	AS publication_year,
+		cast(Id AS int)		AS movie_id,
+		5.0					AS price,
+		NULL				AS duration,
+		NULL				AS descripton, 
+		NULL				AS cover_image, 
+		NULL				AS previous_part, 
+		NULL				AS [URL]
+
+FROM MYIMDB.dbo.Imported_Movie
+
+--Customer
+
+--Genre
+insert  Fletnix.dbo.Genre
+
+select  distinct left(Genre,255)		as genre_name,
+        null							as [description]
+
+from    MYIMDB.dbo.Imported_Genre
