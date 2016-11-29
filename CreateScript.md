@@ -135,10 +135,3 @@ create table Watch_history
 	
 		
 )
-
-----------------------------------------------
--- Nog aan te maken:						--
--- Watch_date moet binnen subscription vallen-
-----------------------------------------------
-
-
