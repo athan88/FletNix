@@ -1,0 +1,89 @@
+go
+use FletNix
+go 
+
+--	Alle films gesorteerd naar genre [movie title, publication year, genre]
+
+select Movie.title ,Movie.publication_year, Movie_genre.genre_name
+from Movie inner join Movie_genre on
+Movie.movie_id = Movie_genre.movie_id
+order by Movie_genre.genre_name 
+
+--  Alle movies die tussen 1990 en 2010 geproduceerd zijn.
+
+select Movie.movie_id,  Movie.title, Movie.publication_year
+from Movie
+where Movie.publication_year > '12-31-1989' and Movie.publication_year < '1-1-2011' 
+order by Movie.title
+
+-- Alle klanten die op dit moment actief zijn (i.e. subscription_end moet leeg zijn) [customer name, subscription_start]
+
+select Customer.[name], Customer.subscription_start
+from Customer
+where subscription_end is null OR subscription_end <= getdate()
+order by Customer.[name]
+
+-- De cast uit alle Terminator movies “” uit het jaar 1991 [id, title, firstname, lastname, role]
+
+select Movie_cast.person_id, Movie.title, person.firstname, person.lastname, Movie_cast.[role] 
+from Movie join Movie_cast
+on Movie_cast.movie_id = Movie.movie_id
+join Person 
+on Person.person_id = Movie_cast.person_id
+where Movie.title like '%Terminator%' AND Movie.publication_year = 1991
+
+
+/*testscript*/
+select * 
+from 
+Movie
+
+insert Movie 
+values
+(1, 'The Terminator 2', 122, 'Description of the Terminator 2', 1991, NULL, NULL, 10, 'URL of Terminator 2')
+
+--Person
+select* 
+from 
+Person
+
+insert Person
+values
+(1, 'Schwarzenegger', 'Arnold', 'M')
+
+--Cast
+select *
+from 
+Movie_cast
+
+insert Movie_cast
+values
+(1, 1, 'The Terminator')
+
+-- Alle movies waarin de acteur "Arnold Schwarzenegger" een rol speelt [movie title, publication year]
+
+select Movie.title, Movie.publication_year
+from Movie join Movie_cast
+on Movie_cast.movie_id = Movie.movie_id
+join person
+on Movie_cast.person_id = Person.person_id 
+where Person.firstname = 'Arnold' and Person.lastname = 'Schwarzenegger'
+
+-- Alle gebruikers met openstaande kosten [Customer name, total price]
+
+create view OpenstaandeKosten (Customer_name, total_price)
+as
+select Customer.name, sum(Watch_history.price)
+from Customer join Watch_history
+on Customer.customer_mail_adres = Watch_history.customer_mail_adres
+group by Customer.[name]
+
+
+select * 
+from OpenstaandeKosten
+
+-- Toon 100 movies die tot nu toe het minst bekeken zijn, gesorteerd naar het aantal keren dat ze gekeken werden. 
+--Dit houdt ook 0 keer in [Movie title, number of times watched]
+
+create view leastwatched (Movie_title, number_of_times_watched)
+as
