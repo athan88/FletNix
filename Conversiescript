@@ -42,16 +42,10 @@ From MYIMDB.dbo.Imported_Person
 
 
 --Movie
-use MYIMDB
-select * 
-from Imported_Movie
-Order by Nyr asc
-
-use FletNix
-select * 
-from Movie
-
+go
 use master
+go
+
 INSERT into Fletnix.dbo.Movie
 SELECT  
 		cast(Id AS int)			AS movie_id,
@@ -59,7 +53,7 @@ SELECT
 		NULL				AS duration,
 		NULL				AS descripton,
 		cast(year AS int)		AS publication_year, 
-		NULL				AS cover_image, 
+		'cover image of' cast(Id as int)					AS 'cover image of'cover_image, 
 		NULL				AS previous_part, 
 		5.0				AS price,
 		Id				AS [URL]
