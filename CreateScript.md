@@ -66,7 +66,7 @@ create table Movie_cast
 	[role] varchar(255) NOT NULL,
 
 		--creating constraints
-		constraint pk_Movie_cast primary key (movie_id),
+		constraint pk_Movie_cast primary key (movie_id,person_id,[role]),
 
 		constraint 	fk_Movie_cast_person_id foreign key (person_id) references Person(person_id)
 		on update cascade
@@ -85,7 +85,7 @@ create table Movie_director
 	person_id int NOT NULL,
 
 		--creating constraints
-		constraint pk_movie_director primary key (movie_id),
+		constraint pk_movie_director primary key (movie_id,person_id),
 
 		constraint fk_Movie_director_person_id foreign key (person_id)  references Person(person_id)
 		on update cascade
@@ -110,7 +110,7 @@ create table Movie_genre
 	genre_name varchar(255) NOT NULL
 
 		--creating constraints
-		constraint pk_movie_genre primary key (movie_id),
+		constraint pk_movie_genre primary key (movie_id,genre_name),
 
 		constraint fk_Movie_genre_movie_id foreign key (movie_id) references Movie(movie_id)
 		on update cascade
@@ -160,7 +160,7 @@ create table Watch_history
 	price numeric(5,2) NOT NULL 
 
 		--creating constraints
-		constraint pk_watch_history primary key (movie_id),
+		constraint pk_watch_history primary key (movie_id,customer_mail_adres,watch_date),
 
 		constraint fk_Watch_history_Movie_id foreign key (movie_id) references Movie(movie_id)
 		on update cascade
