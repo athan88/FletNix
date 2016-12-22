@@ -2,28 +2,28 @@ go
 use FletNix
 go 
 
---	Alle films gesorteerd naar genre [movie title, publication year, genre]
+--A.	Alle films gesorteerd naar genre [movie title, publication year, genre]
 
 select Movie.title ,Movie.publication_year, Movie_genre.genre_name
 from Movie inner join Movie_genre on
 Movie.movie_id = Movie_genre.movie_id
 order by Movie_genre.genre_name 
 
---  Alle movies die tussen 1990 en 2010 geproduceerd zijn.
+--B.	  Alle movies die tussen 1990 en 2010 geproduceerd zijn.
 
 select Movie.movie_id,  Movie.title, Movie.publication_year
 from Movie
 where Movie.publication_year > '12-31-1989' and Movie.publication_year < '1-1-2011' 
 order by Movie.title
 
--- Alle klanten die op dit moment actief zijn (i.e. subscription_end moet leeg zijn) [customer name, subscription_start]
+--C.	 Alle klanten die op dit moment actief zijn (i.e. subscription_end moet leeg zijn) [customer name, subscription_start]
 
 select Customer.[name], Customer.subscription_start
 from Customer
 where subscription_end is null OR subscription_end <= getdate()
 order by Customer.[name]
 
--- De cast uit alle Terminator movies “” uit het jaar 1991 [id, title, firstname, lastname, role]
+--D.	 De cast uit alle Terminator movies “” uit het jaar 1991 [id, title, firstname, lastname, role]
 
 select Movie_cast.person_id, Movie.title, person.firstname, person.lastname, Movie_cast.[role] 
 from Movie join Movie_cast
@@ -60,7 +60,7 @@ insert Movie_cast
 values
 (1, 1, 'The Terminator')
 
--- Alle movies waarin de acteur "Arnold Schwarzenegger" een rol speelt [movie title, publication year]
+--E.	 Alle movies waarin de acteur "Arnold Schwarzenegger" een rol speelt [movie title, publication year]
 
 select Movie.title, Movie.publication_year
 from Movie join Movie_cast
@@ -69,7 +69,7 @@ join person
 on Movie_cast.person_id = Person.person_id 
 where Person.firstname = 'Arnold' and Person.lastname = 'Schwarzenegger'
 
--- Alle gebruikers met openstaande kosten [Customer name, total price]
+--F.	 Alle gebruikers met openstaande kosten [Customer name, total price]
 
 create view OpenstaandeKosten (Customer_name, total_price)
 as
@@ -82,8 +82,47 @@ group by Customer.[name]
 select * 
 from OpenstaandeKosten
 
--- Toon 100 movies die tot nu toe het minst bekeken zijn, gesorteerd naar het aantal keren dat ze gekeken werden. 
+--G.	 Toon 100 movies die tot nu toe het minst bekeken zijn, gesorteerd naar het aantal keren dat ze gekeken werden. 
 --Dit houdt ook 0 keer in [Movie title, number of times watched]
 
 create view leastwatched (Movie_title, number_of_times_watched)
+as 
+select top 100	 Movie.title, count(*)
+from			 Movie right outer join Watch_history
+on				 Movie.movie_id = Watch_history.movie_id
+group by		 Movie.title
+order by		 2
+
+select*
+from leastwatched
+
+--H.	Alle movies die in de afgelopen twee weken het meest bekeken zijn, gesorteerd naar het aantal keren dat ze gekeken werden. 
+-- Toon alleen movies die minimaal een keer bekeken zijn [movie title, publication_year, number of times watched].
+
+create view mostwatched (movie_title, publication_year, number_of_times_watched)
 as
+select		Movie.title, Movie.publication_year, count(*) as 'Number of times watched'
+from		Movie join Watch_history
+on			Movie.movie_id = Watch_history.movie_id
+where		Watch_history.watch_date <= getdate() and Watch_history.watch_date >= dateadd(week, -2 ,getdate())
+group by	Movie.title, Movie.publication_year
+order by	3 desc
+
+
+--I.	Alle movies die meer dan 8 genres hebben [title, publication_year]
+
+select Movie.title, Movie.publication_year
+from Movie join Movie_genre
+on Movie.movie_id = Movie_genre.movie_id
+where Movie_genre.movie_id in(
+
+		select Movie_genre.movie_id
+		from   Movie_genre
+		group by Movie_genre.movie_id
+		having count(*) >= 8
+
+)
+
+--J.	Alle vrouwen die in Horror movies en Family movies gespeeld hebben [firstname,lastname] 
+
+
